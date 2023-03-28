@@ -5,6 +5,6 @@ export interface OptionInterface {
   updated_at: string;
 }
 
-export interface OptionWithVotes extends OptionInterface {
+export interface OptionWithVotesInterface extends OptionInterface {
   votes_count: number;
 }
