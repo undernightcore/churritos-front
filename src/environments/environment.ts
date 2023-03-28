@@ -4,7 +4,7 @@
 
 export const environment = {
   production: false,
-  apiUrl: 'https://churritos-back.puntaserver.com',
+  apiUrl: 'http://localhost:3333',
 };
 
 /*
