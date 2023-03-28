@@ -1,0 +1,16 @@
+import { NgModule } from '@angular/core';
+import { RouterModule, Routes } from '@angular/router';
+import { PollComponent } from './poll.component';
+
+const routes: Routes = [
+  {
+    path: ':id',
+    component: PollComponent,
+  },
+];
+
+@NgModule({
+  imports: [RouterModule.forChild(routes)],
+  exports: [RouterModule],
+})
+export class PollRoutingModule {}
