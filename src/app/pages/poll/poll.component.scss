@@ -1,0 +1,30 @@
+.poll {
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+
+  &__form {
+
+    & > h1 {
+      color: lightsalmon;
+      margin-bottom: 8px;
+    }
+
+    & > h2 {
+      & > span {
+        color: lightsalmon;
+      }
+      margin-bottom: 8px;
+    }
+
+    & > form {
+      display: flex;
+      flex-direction: column;
+    }
+
+    & > button {
+      color: white;
+      background-color: lightsalmon;
+    }
+  }
+}

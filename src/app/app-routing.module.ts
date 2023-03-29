@@ -3,7 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 
 const routes: Routes = [
   {
-    path: 'poll',
+    path: 'poll/:id',
     loadChildren: () =>
       import('./pages/poll/poll.module').then((m) => m.PollModule),
   },

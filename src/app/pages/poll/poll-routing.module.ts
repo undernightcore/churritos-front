@@ -4,7 +4,7 @@ import { PollComponent } from './poll.component';
 
 const routes: Routes = [
   {
-    path: ':id',
+    path: '',
     component: PollComponent,
   },
 ];
