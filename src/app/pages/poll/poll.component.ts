@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnInit } from '@angular/core';
+import { Component, ElementRef, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { FullPollInterface } from '../../../interfaces/poll.interface';
 import Chart from 'chart.js/auto';
@@ -8,27 +8,36 @@ import { PasswordModalComponent } from './components/password-modal/password-mod
 import { MemoryStorageService } from '../../services/memory-storage.service';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { OptionWithVotesInterface } from '../../../interfaces/option.interface';
-import { forkJoin } from 'rxjs';
+import { forkJoin, mergeMap, Subscription } from 'rxjs';
+import { randomColor } from '../../utils/color.utils';
+import { RealtimeService } from '../../services/realtime.service';
+import { CreateVoteInterface } from '../../../interfaces/create-vote.interface';
 
 @Component({
   selector: 'app-poll',
   templateUrl: './poll.component.html',
   styleUrls: ['./poll.component.scss'],
 })
-export class PollComponent implements OnInit {
+export class PollComponent implements OnInit, OnDestroy {
   poll?: FullPollInterface;
-  votes?: OptionWithVotesInterface[];
   voteForm = new FormGroup({
     name: new FormControl('', [Validators.required, Validators.minLength(3)]),
     option: new FormControl<number | null>(null, [Validators.required]),
   });
   chart?: Chart;
 
+  votesSubscription?: Subscription;
+
+  get currentVote() {
+    return this.memoryStorageService.getItem('option');
+  }
+
   constructor(
     private activatedRoute: ActivatedRoute,
     private pollService: PollsService,
     private dialogService: MatDialog,
     private memoryStorageService: MemoryStorageService,
+    private realtimeService: RealtimeService,
     private elementRef: ElementRef
   ) {}
 
@@ -38,6 +47,10 @@ export class PollComponent implements OnInit {
     });
   }
 
+  ngOnDestroy() {
+    this.votesSubscription?.unsubscribe();
+  }
+
   #getAll(pollId: number, password?: string) {
     forkJoin([
       this.pollService.getPoll(pollId, password),
@@ -45,8 +58,9 @@ export class PollComponent implements OnInit {
     ]).subscribe({
       next: ([poll, votes]) => {
         this.poll = poll;
-        this.votes = votes;
-        this.#buildChart(poll, votes);
+        this.memoryStorageService.setItem('password', password);
+        this.#buildChart(votes);
+        this.#listenToPoll(pollId);
       },
       error: () => {
         this.dialogService
@@ -59,18 +73,58 @@ export class PollComponent implements OnInit {
     });
   }
 
-  #buildChart(poll: FullPollInterface, votes: OptionWithVotesInterface[]) {
+  handleSave() {
+    this.voteForm.markAllAsTouched();
+    if (!this.voteForm.valid || !this.poll) return;
+    this.pollService
+      .createVote(
+        this.poll.id,
+        this.voteForm.value as CreateVoteInterface,
+        this.memoryStorageService.getItem('password')
+      )
+      .subscribe(() => {
+        this.memoryStorageService.setItem(
+          'option',
+          this.poll?.options.find(
+            (option) => option.id === this.voteForm.value.option
+          )?.title
+        );
+      });
+  }
+
+  #listenToPoll(pollId: number) {
+    this.votesSubscription?.unsubscribe();
+    this.votesSubscription = this.realtimeService
+      .listenToPoll(pollId)
+      .pipe(
+        mergeMap(() =>
+          this.pollService.getVotes(
+            pollId,
+            this.memoryStorageService.getItem('password')
+          )
+        )
+      )
+      .subscribe((votes) => {
+        if (!this.chart) return;
+        this.chart.data.datasets[0].data = votes.map(
+          (vote) => vote.votes_count
+        );
+        this.chart.update();
+      });
+  }
+
+  #buildChart(votes: OptionWithVotesInterface[]) {
     this.chart = new Chart(
       this.elementRef.nativeElement.querySelector('#chart'),
       {
         type: 'pie',
         data: {
-          labels: poll.options.map((option) => option.title),
+          labels: votes.map((option) => option.title),
           datasets: [
             {
               label: 'Votos totales',
               data: votes.map((vote) => vote.votes_count),
-              backgroundColor: ['red', 'blue'],
+              backgroundColor: votes.map(() => randomColor()),
             },
           ],
         },
