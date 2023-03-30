@@ -29,9 +29,7 @@ export class PollComponent implements OnInit, OnDestroy {
   votesSubscription?: Subscription;
 
   get currentVote() {
-    return this.poll
-      ? this.memoryStorageService.getItem(`${this.poll.id}:option`)
-      : undefined;
+    return this.memoryStorageService.getItem('option');
   }
 
   constructor(
@@ -85,11 +83,12 @@ export class PollComponent implements OnInit, OnDestroy {
         this.memoryStorageService.getItem('password')
       )
       .subscribe(() => {
-        const voted = this.poll?.options.find(
-          (option) => option.id === this.voteForm.value.option
-        )?.title;
-        if (!voted) return;
-        localStorage.setItem(`${this.poll?.id}:option`, voted);
+        this.memoryStorageService.setItem(
+          'option',
+          this.poll?.options.find(
+            (option) => option.id === this.voteForm.value.option
+          )?.title
+        );
       });
   }
 
