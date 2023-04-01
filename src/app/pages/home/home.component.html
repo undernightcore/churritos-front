@@ -1,0 +1,14 @@
+<div class="home">
+  <img src="assets/img/churritos.png" />
+  <h2>¡Bienvenido a <span>Churritos</span>!</h2>
+  <p>Sirve para más cosas jaja</p>
+  <mat-form-field>
+    <input
+      type="number"
+      [formControl]="pollNumberControl"
+      placeholder="Número de encuesta"
+      matInput
+    />
+  </mat-form-field>
+  <button (click)="handleSubmit()" mat-button>Unirte</button>
+</div>

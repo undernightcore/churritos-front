@@ -12,6 +12,7 @@ import { forkJoin, mergeMap, Subscription } from 'rxjs';
 import { randomColor } from '../../utils/color.utils';
 import { RealtimeService } from '../../services/realtime.service';
 import { CreateVoteInterface } from '../../../interfaces/create-vote.interface';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-poll',
@@ -51,7 +52,8 @@ export class PollComponent implements OnInit, OnDestroy {
     private dialogService: MatDialog,
     private memoryStorageService: MemoryStorageService,
     private realtimeService: RealtimeService,
-    private elementRef: ElementRef
+    private elementRef: ElementRef,
+    private snackbarService: MatSnackBar
   ) {}
 
   ngOnInit() {
@@ -84,6 +86,11 @@ export class PollComponent implements OnInit, OnDestroy {
               this.#getAll(pollId, newPassword);
             });
         } else {
+          this.snackbarService.open(
+            'No se ha podido acceder a esa encuesta',
+            undefined,
+            { duration: 4000 }
+          );
           this.router.navigate(['/']);
         }
       },

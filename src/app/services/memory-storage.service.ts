@@ -6,6 +6,10 @@ import { Injectable } from '@angular/core';
 export class MemoryStorageService {
   #storage = new Map<string, string | undefined>();
 
+  clear() {
+    this.#storage.clear();
+  }
+
   getItem(key: string) {
     return this.#storage.get(key);
   }
