@@ -1,7 +1,7 @@
 import { Component, ElementRef, OnDestroy, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { FullPollInterface } from '../../../interfaces/poll.interface';
-import Chart from 'chart.js/auto';
+import Chart, { ChartEvent } from 'chart.js/auto';
 import { PollsService } from '../../services/polls.service';
 import { MatDialog } from '@angular/material/dialog';
 import { PasswordModalComponent } from './components/password-modal/password-modal.component';
@@ -32,8 +32,21 @@ export class PollComponent implements OnInit, OnDestroy {
     return this.memoryStorageService.getItem('option');
   }
 
+  set currentVote(value: string | undefined) {
+    this.memoryStorageService.setItem('option', value);
+  }
+
+  get currentPassword() {
+    return this.memoryStorageService.getItem('password');
+  }
+
+  set currentPassword(value: string | undefined) {
+    this.memoryStorageService.setItem('password', value);
+  }
+
   constructor(
     private activatedRoute: ActivatedRoute,
+    private router: Router,
     private pollService: PollsService,
     private dialogService: MatDialog,
     private memoryStorageService: MemoryStorageService,
@@ -43,7 +56,7 @@ export class PollComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.activatedRoute.params.subscribe((params) => {
-      this.#getAll(params['id']);
+      this.#getAll(params['id'], this.currentPassword);
     });
   }
 
@@ -58,38 +71,23 @@ export class PollComponent implements OnInit, OnDestroy {
     ]).subscribe({
       next: ([poll, votes]) => {
         this.poll = poll;
-        this.memoryStorageService.setItem('password', password);
+        this.currentPassword = password;
         this.#buildChart(votes);
         this.#listenToPoll(pollId);
       },
-      error: () => {
-        this.dialogService
-          .open(PasswordModalComponent, { disableClose: true })
-          .afterClosed()
-          .subscribe((newPassword) => {
-            this.#getAll(pollId, newPassword);
-          });
+      error: (error) => {
+        if (error.status === 403) {
+          this.dialogService
+            .open(PasswordModalComponent, { disableClose: true })
+            .afterClosed()
+            .subscribe((newPassword) => {
+              this.#getAll(pollId, newPassword);
+            });
+        } else {
+          this.router.navigate(['/']);
+        }
       },
     });
-  }
-
-  handleSave() {
-    this.voteForm.markAllAsTouched();
-    if (!this.voteForm.valid || !this.poll) return;
-    this.pollService
-      .createVote(
-        this.poll.id,
-        this.voteForm.value as CreateVoteInterface,
-        this.memoryStorageService.getItem('password')
-      )
-      .subscribe(() => {
-        this.memoryStorageService.setItem(
-          'option',
-          this.poll?.options.find(
-            (option) => option.id === this.voteForm.value.option
-          )?.title
-        );
-      });
   }
 
   #listenToPoll(pollId: number) {
@@ -97,12 +95,7 @@ export class PollComponent implements OnInit, OnDestroy {
     this.votesSubscription = this.realtimeService
       .listenToPoll(pollId)
       .pipe(
-        mergeMap(() =>
-          this.pollService.getVotes(
-            pollId,
-            this.memoryStorageService.getItem('password')
-          )
-        )
+        mergeMap(() => this.pollService.getVotes(pollId, this.currentPassword))
       )
       .subscribe((votes) => {
         if (!this.chart) return;
@@ -135,8 +128,39 @@ export class PollComponent implements OnInit, OnDestroy {
               position: 'top',
             },
           },
+          onClick: (event) => this.handleClick(votes, event),
         },
       }
     );
+  }
+
+  handleSave() {
+    this.voteForm.markAllAsTouched();
+    if (!this.voteForm.valid || !this.poll) return;
+    this.pollService
+      .createVote(
+        this.poll.id,
+        this.voteForm.value as CreateVoteInterface,
+        this.currentPassword
+      )
+      .subscribe(() => {
+        this.currentVote = this.poll?.options.find(
+          (option) => option.id === this.voteForm.value.option
+        )?.title;
+      });
+  }
+
+  handleClick(votes: OptionWithVotesInterface[], event: ChartEvent) {
+    if (!this.chart || !this.poll) return;
+    const selectedOption =
+      votes[
+        this.chart.getElementsAtEventForMode(
+          event as unknown as Event,
+          'nearest',
+          {},
+          false
+        )[0].index
+      ];
+    this.router.navigate(['/poll', this.poll.id, 'option', selectedOption.id]);
   }
 }

@@ -1,0 +1,22 @@
+<div *ngIf="option && votes" class="option">
+  <div class="option__info">
+    <h2>
+      Gente que ha votado <span>{{ option.title }}</span>
+    </h2>
+    <span [routerLink]="['../../']">Volver al formulario de votos</span>
+  </div>
+  <div
+    infiniteScroll
+    [itemsPerPage]="20"
+    [currentItems]="votes.length"
+    [maxItems]="maxVotes"
+    (newPageNeeded)="getVotes(option.id, $event)?.subscribe()"
+    class="option__list"
+  >
+    <div *ngFor="let vote of votes">
+      <h4>
+        <span>{{ vote.name }}</span> ha votado <span>{{ option.title }}</span>
+      </h4>
+    </div>
+  </div>
+</div>

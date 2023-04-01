@@ -11,9 +11,11 @@ import { MatInputModule } from '@angular/material/input';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatSelectModule } from '@angular/material/select';
 import { IdToOptionPipe } from './pipes/id-to-option.pipe';
+import { OptionComponent } from './pages/option/option.component';
+import {InfiniteScrollModule} from "../../directives/infinite-scroll/infinite-scroll.module";
 
 @NgModule({
-  declarations: [PollComponent, PasswordModalComponent, IdToOptionPipe],
+  declarations: [PollComponent, PasswordModalComponent, IdToOptionPipe, OptionComponent],
   imports: [
     CommonModule,
     PollRoutingModule,
@@ -23,6 +25,7 @@ import { IdToOptionPipe } from './pipes/id-to-option.pipe';
     MatInputModule,
     ReactiveFormsModule,
     MatSelectModule,
+    InfiniteScrollModule,
   ],
 })
 export class PollModule {}

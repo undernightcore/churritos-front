@@ -1,0 +1,43 @@
+.option {
+  height: calc(100vh - 56px);
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+
+  @media (min-width: 600px) {
+    height: calc(100vh - 64px);
+  }
+
+  & > * {
+    padding: 12px;
+  }
+
+  &__info {
+    & > h2 {
+      margin: 0;
+      & > span {
+        color: lightsalmon;
+      }
+    }
+
+    & > span {
+      cursor: pointer;
+    }
+
+
+  }
+
+  &__list {
+    height: 100%;
+    overflow: auto;
+
+    & > div {
+      & > h4 {
+        margin: 0;
+        & > span {
+          color: lightsalmon;
+        }
+      }
+    }
+  }
+}
