@@ -1,14 +1,16 @@
 <div class="home">
-  <img src="assets/img/churritos.png" />
-  <h2>¡Bienvenido a <span>Churritos</span>!</h2>
-  <p>Sirve para más cosas jaja</p>
-  <mat-form-field>
-    <input
-      type="number"
-      [formControl]="pollNumberControl"
-      placeholder="Número de encuesta"
-      matInput
-    />
-  </mat-form-field>
-  <button (click)="handleSubmit()" mat-button>Unirte</button>
+  <mat-card>
+    <img mat-card-image src="assets/img/title.png">
+    <mat-card-content>
+      <h2>¡Bienvenido a <span>Churritos</span>!</h2>
+      <p>Sirve para alguna cosa más</p>
+      <mat-form-field appearance="outline">
+        <mat-label>Número de encuesta</mat-label>
+        <input matInput [formControl]="pollNumberControl" inputmode="numeric" (keydown)="onlyNumbers($event)">
+      </mat-form-field>
+    </mat-card-content>
+    <mat-card-actions>
+      <button (click)="handleSubmit()" mat-button>Unirte</button>
+    </mat-card-actions>
+  </mat-card>
 </div>

@@ -9,16 +9,28 @@
     height: calc(100vh - 64px);
   }
 
-  & > h2 {
-    margin: 0;
-  }
+  & > mat-card {
+    width: 35rem;
+    color: #333333de;
+    border: 1px solid #e3e3e3;
+    box-shadow: none;
 
-  & > img {
-    height: 200px;
-  }
+    & > mat-card-content {
+      text-align: center;
 
-  & > button {
-    background-color: lightsalmon;
-    color: white;
+      & > h2 {
+        margin: 0 0 4px 0;
+      }
+
+      & > p {
+        margin: 0 0 28px 0;
+      }
+    }
+
+    & > mat-card-actions > button {
+      background-color: lightsalmon;
+      color: white;
+      width: 100%;
+    }
   }
 }

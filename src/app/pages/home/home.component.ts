@@ -19,11 +19,22 @@ export class HomeComponent {
   pollNumberControl = new FormControl('', [
     Validators.required,
     Validators.min(1),
+    Validators.pattern("^[0-9]*$")
   ]);
 
   handleSubmit() {
     this.pollNumberControl.markAsTouched();
     if (this.pollNumberControl.invalid) return;
     this.router.navigate(['/poll', this.pollNumberControl.value]);
+  }
+
+  onlyNumbers(event: KeyboardEvent) {
+    if (event.key.length > 1) {
+      return;
+    }
+
+    if (!/^[0-9]$/.test(event.key)) {
+      event.preventDefault();
+    }
   }
 }
