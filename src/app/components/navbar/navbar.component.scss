@@ -1,4 +1,11 @@
 mat-toolbar {
   position: sticky;
   top: 0;
+  background: white;
+
+  & > img {
+    width: 9rem;
+    height: 64px;
+    margin: 0;
+  }
 }
