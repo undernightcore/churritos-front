@@ -3,10 +3,13 @@ mat-toolbar {
   top: 0;
   background: white;
   z-index: 1;
+  padding: 0;
 
   & > img {
     width: 9rem;
-    height: 64px;
+    height: 56px;
     margin: 0;
+    object-fit: cover;
+    object-position: center;
   }
 }
