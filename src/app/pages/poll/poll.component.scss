@@ -1,13 +1,28 @@
 .poll {
-  padding: 12px;
   display: flex;
   flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 5rem;
+
   @media (min-width: 900px) {
     flex-direction: row;
-    justify-content: center;
-    & > div {
+  }
+
+  & > mat-card {
+    height: 25rem;
+    display: flex;
+    flex-direction: column;
+
+    & > mat-card-content {
+      flex-grow: 1;
+    }
+
+    & > mat-card-actions > button {
+      background-color: lightsalmon;
+      color: white;
       width: 100%;
-      max-height: 70vh;
     }
   }
 
@@ -19,14 +34,17 @@
   }
 
   &__form {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    height: 100%;
+
     & > h1 {
       color: lightsalmon;
-      margin-bottom: 8px;
+      font-weight: 600;
     }
 
     & > div {
-
-
       & > form {
         display: flex;
         flex-direction: column;
@@ -42,5 +60,9 @@
   &__info {
     display: flex;
     justify-content: center;
+
+    & > canvas {
+      min-height: 12rem;
+    }
   }
 }

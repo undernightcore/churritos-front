@@ -1,31 +1,41 @@
 <div class="poll">
-  <div class="poll__form">
-    <h1>{{ poll?.name ?? 'Cargando...' }}</h1>
-    <p>{{ poll?.description ?? "No hay descripción" }}</p>
-    <div *ngIf="!currentVote">
-      <h2>¡Vota <span>ahora</span>!</h2>
-      <form [formGroup]="voteForm">
-        <mat-form-field appearance="outline">
-          <mat-label>Tu nombre</mat-label>
-          <input placeholder="Nombre" matInput formControlName="name" />
-        </mat-form-field>
-        <mat-form-field appearance="outline">
-          <mat-label>Opciones</mat-label>
-          <mat-select formControlName="option">
-            <mat-select-trigger>{{
-              voteForm.controls.option.value | idToOption : poll?.options ?? []
-              }}</mat-select-trigger>
-            <mat-option *ngFor="let option of poll?.options" [value]="option.id">
-              {{option.title}}
-            </mat-option>
-          </mat-select>
-        </mat-form-field>
-      </form>
+  <mat-card>
+    <mat-card-content>
+      <div class="poll__form">
+        <h1>{{ poll?.name ?? 'Cargando...' }}</h1>
+        <p>{{ poll?.description ?? "No hay descripción" }}</p>
+        <div *ngIf="!currentVote">
+          <h2>¡Vota <span>ahora</span>!</h2>
+          <form [formGroup]="voteForm">
+            <mat-form-field appearance="outline">
+              <mat-label>Tu nombre</mat-label>
+              <input placeholder="Nombre" matInput formControlName="name" />
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+              <mat-label>Opciones</mat-label>
+              <mat-select formControlName="option">
+                <mat-select-trigger>{{
+                    voteForm.controls.option.value | idToOption : poll?.options ?? []
+                  }}</mat-select-trigger>
+                <mat-option *ngFor="let option of poll?.options" [value]="option.id">
+                  {{option.title}}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </form>
+        </div>
+        <h2 *ngIf="currentVote">¡Prefieres <span>{{currentVote}}!</span></h2>
+      </div>
+    </mat-card-content>
+    <mat-card-actions>
       <button (click)="handleSave()" mat-button>Votar</button>
-    </div>
-    <h2 *ngIf="currentVote">¡Prefieres <span>{{currentVote}}!</span></h2>
-  </div>
-  <div class="poll__info">
-    <canvas id="chart"></canvas>
-  </div>
+    </mat-card-actions>
+  </mat-card>
+  <mat-card>
+    <mat-card-content>
+      <div class="poll__info">
+        <canvas id="chart"></canvas>
+      </div>
+    </mat-card-content>
+  </mat-card>
 </div>

@@ -132,7 +132,7 @@ export class PollComponent implements OnInit, OnDestroy {
           responsive: true,
           plugins: {
             legend: {
-              position: 'top',
+              position: 'bottom',
             },
           },
           onClick: (event) => this.handleClick(votes, event),

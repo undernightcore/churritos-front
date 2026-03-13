@@ -14,6 +14,7 @@ import { IdToOptionPipe } from './pipes/id-to-option.pipe';
 import { OptionComponent } from './pages/option/option.component';
 import { InfiniteScrollModule } from '../../directives/infinite-scroll/infinite-scroll.module';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
+import {MatCardModule} from "@angular/material/card";
 
 @NgModule({
   declarations: [
@@ -33,6 +34,7 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
     MatSelectModule,
     InfiniteScrollModule,
     MatSnackBarModule,
+    MatCardModule,
   ],
 })
 export class PollModule {}
