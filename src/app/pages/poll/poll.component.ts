@@ -1,18 +1,18 @@
 import { Component, ElementRef, OnDestroy, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { FullPollInterface } from '../../../interfaces/poll.interface';
-import Chart, { ChartEvent } from 'chart.js/auto';
-import { PollsService } from '../../services/polls.service';
-import { MatDialog } from '@angular/material/dialog';
-import { PasswordModalComponent } from './components/password-modal/password-modal.component';
-import { MemoryStorageService } from '../../services/memory-storage.service';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { OptionWithVotesInterface } from '../../../interfaces/option.interface';
-import { forkJoin, mergeMap, Subscription } from 'rxjs';
-import { randomColor } from '../../utils/color.utils';
-import { RealtimeService } from '../../services/realtime.service';
-import { CreateVoteInterface } from '../../../interfaces/create-vote.interface';
+import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { ActivatedRoute, Router } from '@angular/router';
+import Chart, { ChartEvent } from 'chart.js/auto';
+import { forkJoin, mergeMap, Subscription } from 'rxjs';
+import { CreateVoteInterface } from '../../../interfaces/create-vote.interface';
+import { OptionWithVotesInterface } from '../../../interfaces/option.interface';
+import { FullPollInterface } from '../../../interfaces/poll.interface';
+import { MemoryStorageService } from '../../services/memory-storage.service';
+import { PollsService } from '../../services/polls.service';
+import { RealtimeService } from '../../services/realtime.service';
+import { randomColor } from '../../utils/color.utils';
+import { PasswordModalComponent } from './components/password-modal/password-modal.component';
 
 @Component({
   selector: 'app-poll',
@@ -129,7 +129,7 @@ export class PollComponent implements OnInit, OnDestroy {
           ],
         },
         options: {
-          responsive: true,
+          responsive: false,
           plugins: {
             legend: {
               position: 'bottom',
@@ -159,6 +159,7 @@ export class PollComponent implements OnInit, OnDestroy {
 
   handleClick(votes: OptionWithVotesInterface[], event: ChartEvent) {
     if (!this.chart || !this.poll) return;
+
     const selectedOption =
       votes[
         this.chart.getElementsAtEventForMode(
